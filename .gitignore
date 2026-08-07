@@ -1,21 +1,52 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
+# 🏥 DoctorClinic Management System
 
-# PyCharm
-.idea/
+A full-stack web application for managing doctors and patient appointments.
 
-# Virtual environment
-venv/
-.venv/
-env/
+## 📌 About
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+DoctorClinic provides an administrative system for a medical clinic. Administrators can manage doctors, appointments, and view important statistics through a dashboard.
 
-# Operating system
-.DS_Store
-Thumbs.db
+## ✨ Features
+
+- 🔐 Admin Login
+- 📊 Admin Dashboard
+- 👨‍⚕️ Doctor Management
+- ➕ Add Doctors
+- ✏️ Edit Doctors
+- 🗑️ Delete Doctors
+- 🔎 Search Doctors
+- 📅 Appointment Management
+- 🔎 Search Appointments
+- 📈 Dashboard Statistics and Charts
+- ✅ Form Validation
+- 🚪 Logout
+- 📱 Responsive Interface
+
+## 🛠️ Technologies
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+
+### Backend
+- Python
+- FastAPI
+- SQLAlchemy
+- Pydantic
+
+### Database
+- SQLite
+
+## 📁 Project Structure
+
+```text
+DoctorClinic/
+├── admin/
+├── backend/
+├── css/
+├── js/
+├── images/
+├── index.html
+├── README.md
+└── .gitignore
