@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        body{
+            font-family:Arial,sans-serif;
+            background:#f5f7fb;
+            padding:40px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th,td{
+            padding:15px;
+            border:1px solid #ddd;
+            text-align:left;
+        }
+
+        th{
+            background:#4f46e5;
+            color:white;
+        }
+
+        h1{
+            margin-bottom:20px;
+        }
+    </style>
+
+</head>
+<div class="header">
+    DoctorClinic Admin Dashboard
+</div>
+
+<div class="container">
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>Appointments</h2>
+            <p id="appointmentsCount">0</p>
+        </div>
+
+        <div class="card">
+            <h2>Doctors</h2>
+            <p id="doctorsCount">0</p>
+        </div>
+
+        <div class="card">
+            <h2>Patients</h2>
+            <p id="patientsCount">0</p>
+        </div>
+
+        <div class="card">
+            <h2>Departments</h2>
+            <p id="departmentsCount">4</p>
+        </div>
+
+    </div>
+
+
+<body>
+
+<h1>Appointments</h1>
+<input
+    type="text"
+    id="searchInput"
+    placeholder="Search by patient name..."
+    style="width:100%;padding:12px;margin-bottom:20px;font-size:16px;">
+
+<div style="margin-bottom:20px;">
+    <input
+        type="text"
+        id="searchAppointment"
+        placeholder="Search patient by name..."
+        style="
+            width:300px;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:8px;
+        "
+    >
+</div>
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Name</th>
+
+<th>Email</th>
+
+<th>Phone</th>
+
+<th>Department</th>
+
+<th>Date</th>
+
+<th>Message</th>
+
+</tr>
+
+</thead>
+
+<tbody id="appointmentTable">
+
+</tbody>
+
+</table>
+
+<script src="../js/admin.js"></script>
+
+</body>
+</html>

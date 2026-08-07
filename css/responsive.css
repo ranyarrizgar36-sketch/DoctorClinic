@@ -1,0 +1,80 @@
+/* Tablets */
+
+@media (max-width: 992px){
+
+.hero{
+    flex-direction:column;
+    text-align:center;
+    padding:120px 40px;
+}
+
+.hero-text,
+.hero-image{
+    width:100%;
+}
+
+.hero-image{
+    margin-top:40px;
+}
+
+.about,
+.appointment{
+    flex-direction:column;
+}
+
+.about-image,
+.about-text,
+.appointment-info,
+.appointment-form{
+    width:100%;
+}
+
+.footer-content{
+    grid-template-columns:1fr;
+    text-align:center;
+}
+
+}
+
+/* Mobile */
+
+@media (max-width:768px){
+.menu-toggle{
+    display:block;
+}
+
+.nav-links{
+    display:none;
+}
+.navbar{
+    padding:20px;
+}
+
+.nav-links{
+    display:none;
+}
+
+.hero h1{
+    font-size:42px;
+}
+
+.services,
+.about,
+.doctors,
+.appointment,
+.testimonials,
+.footer{
+    padding:70px 25px;
+}
+
+.stats{
+    grid-template-columns:1fr;
+}
+
+.service-container,
+.doctor-container,
+.testimonial-container{
+    grid-template-columns:1fr;
+}
+
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoctorClinic Dashboard</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        body{
+            font-family:Arial,sans-serif;
+            background:#f5f7fb;
+            margin:0;
+            padding:40px;
+        }
+
+        h1{
+            margin-bottom:30px;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+            margin-bottom:40px;
+        }
+
+        canvas{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+    margin-top:30px;
+    max-width:900px;
+}
+
+        .card{
+            background:white;
+            padding:25px;
+            border-radius:12px;
+            box-shadow:0 5px 15px rgba(0,0,0,.1);
+            text-align:center;
+        }
+
+        .card h2{
+            color:#555;
+        }
+
+        .card p{
+            font-size:32px;
+            font-weight:bold;
+            color:#4f46e5;
+        }
+
+        .actions{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+        }
+
+        .actions button{
+            padding:15px 25px;
+            border:none;
+            background:#4f46e5;
+            color:white;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        .actions button:hover{
+            background:#3730a3;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>🏥 DoctorClinic Dashboard</h1>
+<p id="currentDate"></p>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <h2>🏥 DoctorClinic</h2>
+
+        <ul>
+
+            <li>
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+
+            <li>
+                <a href="doctors.html">Doctors</a>
+            </li>
+
+            <li>
+                <a href="appointments.html">Appointments</a>
+            </li>
+
+            <li>
+                <a href="add_doctor.html">Add Doctor</a>
+            </li>
+
+            <li>
+               <a href="#" onclick="logout()">Logout</a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="content">
+
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+
+            <div class="card">
+                <h2>Total Doctors</h2>
+                <p id="doctorCount">0</p>
+            </div>
+
+            <div class="card">
+                <h2>Appointments</h2>
+                <p id="appointmentCount">0</p>
+            </div>
+
+            <div class="card">
+                <h2>Departments</h2>
+                <p>4</p>
+            </div>
+
+            <div class="card">
+                <h2>Patients</h2>
+                <p>0</p>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+<canvas id="dashboardChart" width="400" height="150"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/dashboard.js"></script>
+
+</body>
+</html>
