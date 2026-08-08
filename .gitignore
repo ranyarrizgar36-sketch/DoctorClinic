@@ -44,9 +44,15 @@ DoctorClinic provides an administrative system for a medical clinic. Administrat
 DoctorClinic/
 ├── admin/
 ├── backend/
-├── css/
+├── css/git status
 ├── js/
 ├── images/
 ├── index.html
 ├── README.md
 └── .gitignore
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db

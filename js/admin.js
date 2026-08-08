@@ -4,7 +4,12 @@ async function loadAppointments() {
 
     try {
 
-        const response = await fetch("http://127.0.0.1:8000/appointments");
+        const response = await fetch("http://127.0.0.1:8000/appointments", {
+    method: "GET",
+    headers: {
+        "X-API-Key": "doctorclinic-secret-key"
+    }
+});
 
         allAppointments = await response.json();
 

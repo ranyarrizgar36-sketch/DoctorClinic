@@ -1,73 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
+const API_KEY = "doctorclinic-secret-key";
 
-    const doctorForm = document.getElementById("doctorForm");
+const form = document.getElementById("addDoctorForm");
 
-    doctorForm.addEventListener("submit", async function (e) {
+console.log("Add Doctor JS loaded");
+console.log("Form:", form);
 
-        e.preventDefault();
+if (form) {
 
-        const doctor = {
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        console.log("Add Doctor button clicked");
+
+        const doctorData = {
             full_name: document.getElementById("full_name").value,
             specialization: document.getElementById("specialization").value,
             email: document.getElementById("email").value,
             phone: document.getElementById("phone").value,
-            experience: parseInt(document.getElementById("experience").value),
-            image: document.getElementById("image").value
+            experience: parseInt(
+                document.getElementById("experience").value
+            ),
+            image_url: document.getElementById("image_url").value || null
         };
 
-        // ✅ Validation
-        if (!doctor.email.includes("@")) {
-            alert("❌ Please enter a valid email address.");
-            return;
-        }
-
-        if (doctor.phone.length < 8) {
-            alert("❌ Phone number is too short.");
-            return;
-        }
-
-        if (doctor.experience <= 0 || isNaN(doctor.experience)) {
-            alert("❌ Experience must be greater than 0.");
-            return;
-        }
+        console.log("Sending:", doctorData);
 
         try {
 
-            const response = await fetch("http://127.0.0.1:8000/doctors", {
+            const response = await fetch(
+                "http://127.0.0.1:8000/doctors",
+                {
+                    method: "POST",
 
-                method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-API-Key": API_KEY
+                    },
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(doctor)
-
-            });
+                    body: JSON.stringify(doctorData)
+                }
+            );
 
             const result = await response.json();
 
-            if (response.ok) {
+            console.log("Server response:", response.status, result);
 
-                const addAnother = confirm(
-    "✅ Doctor added successfully!\n\nDo you want to add another doctor?"
-);
-
-if (addAnother) {
-    doctorForm.reset();
-} else {
-    window.location.href = "doctors.html";
-}
-
-            } else {
-
+            if (!response.ok) {
                 alert("❌ Error: " + JSON.stringify(result));
-
+                return;
             }
+
+            alert("✅ Doctor added successfully!");
+
+            form.reset();
+
+            window.location.href = "doctors.html";
 
         } catch (error) {
 
-            console.error(error);
+            console.error("ERROR:", error);
 
             alert("❌ Cannot connect to the server.");
 
@@ -75,4 +67,8 @@ if (addAnother) {
 
     });
 
-});
+} else {
+
+    console.error("❌ addDoctorForm was NOT found!");
+
+}

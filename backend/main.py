@@ -1,49 +1,145 @@
-from fastapi import FastAPI
-from backend.database import engine
-from backend import models
+import os
 
-from fastapi import Depends
-from sqlalchemy.orm import Session
+from dotenv import load_dotenv
+from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from backend.database import SessionLocal
+from sqlalchemy.orm import Session
+
+from backend.database import engine, SessionLocal
+from backend import models
 from backend.schemas import AppointmentCreate, DoctorCreate
 from backend.models import Appointment, Doctor
 
+
+# =========================
+# Load environment variables
+# =========================
+
+load_dotenv()
+
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+API_KEY = os.getenv("API_KEY")
+
+
+# =========================
+# Create database tables
+# =========================
+
 models.Base.metadata.create_all(bind=engine)
 
+
+# =========================
+# Create FastAPI app
+# =========================
+
 app = FastAPI()
+
+
+# =========================
+# CORS
+# =========================
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development only
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# =========================
+# Database connection
+# =========================
+
 def get_db():
     db = SessionLocal()
+
     try:
         yield db
+
     finally:
         db.close()
 
+
+# =========================
+# API Key Authentication
+# =========================
+
+def verify_api_key(x_api_key: str = Header(None)):
+
+    if x_api_key != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )
+
+    return True
+
+
+# =========================
+# Home
+# =========================
+
 @app.get("/")
 def home():
+
     return {
         "message": "DoctorClinic Backend Running",
         "database": "Connected Successfully"
     }
+
+
+# =========================
+# Login
+# =========================
+
+from pydantic import BaseModel
+
+
+class LoginData(BaseModel):
+    username: str
+    password: str
+
+
+@app.post("/login")
+def login(data: LoginData):
+
+    if (
+        data.username == ADMIN_USERNAME
+        and data.password == ADMIN_PASSWORD
+    ):
+
+        return {
+            "success": True,
+            "message": "Login successful"
+        }
+
+    raise HTTPException(
+        status_code=401,
+        detail="Invalid username or password"
+    )
+
+
+# =========================
+# Create Appointment
+# =========================
+
 @app.post("/appointments")
 def create_appointment(
     appointment: AppointmentCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
 ):
+
     new_appointment = Appointment(
         full_name=appointment.full_name,
         email=appointment.email,
         phone=appointment.phone,
         department=appointment.department,
         appointment_date=appointment.appointment_date,
-        message=appointment.message,
+        message=appointment.message
     )
 
     db.add(new_appointment)
@@ -54,37 +150,32 @@ def create_appointment(
         "success": True,
         "appointment_id": new_appointment.id
     }
+
+
+# =========================
+# Get Appointments
+# =========================
+
 @app.get("/appointments")
-def get_appointments(db: Session = Depends(get_db)):
+def get_appointments(
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
+):
+
     appointments = db.query(Appointment).all()
 
     return appointments
-from pydantic import BaseModel
-
-class LoginData(BaseModel):
-    username: str
-    password: str
 
 
-@app.post("/login")
-def login(data: LoginData):
-
-    if data.username == "admin" and data.password == "123456":
-
-        return {
-            "success": True,
-            "message": "Login successful"
-        }
-
-    return {
-        "success": False,
-        "message": "Invalid username or password"
-    }
+# =========================
+# Create Doctor
+# =========================
 
 @app.post("/doctors")
 def create_doctor(
     doctor: DoctorCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
 ):
 
     new_doctor = Doctor(
@@ -106,21 +197,99 @@ def create_doctor(
     }
 
 
+# =========================
+# Get Doctors
+# =========================
+
 @app.get("/doctors")
-def get_doctors(db: Session = Depends(get_db)):
-    return db.query(Doctor).all()
+def get_doctors(
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
+):
+
+    doctors = db.query(Doctor).all()
+
+    return doctors
+# =========================
+# Get Doctor by ID
+# =========================
+
+@app.get("/doctors/{doctor_id}")
+def get_doctor(
+    doctor_id: int,
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
+):
+
+    doctor = db.query(Doctor).filter(
+        Doctor.id == doctor_id
+    ).first()
+
+    if not doctor:
+        raise HTTPException(
+            status_code=404,
+            detail="Doctor not found"
+        )
+
+    return doctor
+
+
+# =========================
+# Update Doctor
+# =========================
+
+@app.put("/doctors/{doctor_id}")
+def update_doctor(
+    doctor_id: int,
+    doctor_data: DoctorCreate,
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
+):
+
+    doctor = db.query(Doctor).filter(
+        Doctor.id == doctor_id
+    ).first()
+
+    if not doctor:
+        raise HTTPException(
+            status_code=404,
+            detail="Doctor not found"
+        )
+
+    doctor.full_name = doctor_data.full_name
+    doctor.specialization = doctor_data.specialization
+    doctor.email = doctor_data.email
+    doctor.phone = doctor_data.phone
+    doctor.experience = doctor_data.experience
+    doctor.image = doctor_data.image
+
+    db.commit()
+    db.refresh(doctor)
+
+    return {
+        "success": True,
+        "message": "Doctor updated successfully"
+    }
+# =========================
+# Delete Doctor
+# =========================
+
 @app.delete("/doctors/{doctor_id}")
 def delete_doctor(
     doctor_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    authenticated: bool = Depends(verify_api_key)
 ):
-    doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
+
+    doctor = db.query(Doctor).filter(
+        Doctor.id == doctor_id
+    ).first()
 
     if not doctor:
-        return {
-            "success": False,
-            "message": "Doctor not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Doctor not found"
+        )
 
     db.delete(doctor)
     db.commit()
@@ -129,44 +298,3 @@ def delete_doctor(
         "success": True,
         "message": "Doctor deleted successfully"
     }
-@app.put("/doctors/{doctor_id}")
-def update_doctor(
-    doctor_id: int,
-    doctor: DoctorCreate,
-    db: Session = Depends(get_db)
-):
-    existing_doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
-
-    if not existing_doctor:
-        return {
-            "success": False,
-            "message": "Doctor not found"
-        }
-
-    existing_doctor.full_name = doctor.full_name
-    existing_doctor.specialization = doctor.specialization
-    existing_doctor.email = doctor.email
-    existing_doctor.phone = doctor.phone
-    existing_doctor.experience = doctor.experience
-    existing_doctor.image = doctor.image
-
-    db.commit()
-
-    return {
-        "success": True,
-        "message": "Doctor updated successfully"
-    }
-@app.get("/doctors/{doctor_id}")
-def get_doctor(
-    doctor_id: int,
-    db: Session = Depends(get_db)
-):
-    doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
-
-    if not doctor:
-        return {
-            "success": False,
-            "message": "Doctor not found"
-        }
-
-    return doctor

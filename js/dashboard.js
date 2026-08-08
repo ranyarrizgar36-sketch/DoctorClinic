@@ -48,17 +48,19 @@ function createChart(doctors, appointments) {
 loadDashboard();
 function logout() {
 
-    const confirmLogout = confirm("Are you sure you want to logout?");
+    const confirmLogout = confirm(
+        "Are you sure you want to logout?"
+    );
 
     if (confirmLogout) {
+
+        localStorage.removeItem("adminLoggedIn");
 
         window.location.href = "login.html";
 
     }
 
 }
-function showDate() {
-
     const today = new Date();
 
     document.getElementById("currentDate").textContent =
