@@ -129,10 +129,8 @@ def login(data: LoginData):
 @app.post("/appointments")
 def create_appointment(
     appointment: AppointmentCreate,
-    db: Session = Depends(get_db),
-    authenticated: bool = Depends(verify_api_key)
+    db: Session = Depends(get_db)
 ):
-
     new_appointment = Appointment(
         full_name=appointment.full_name,
         email=appointment.email,
